@@ -7,20 +7,14 @@ const categorySchema = new mongoose.Schema({
     trim: true,
     unique: true
   },
-  description: {
-    type: String,
-    trim: true
-  },
   image: { // URL to the category's image/icon
     type: String,
     trim: true
   },
-  subcategory: [ // An array to hold subcategory names or IDs
-    {
-      type: String,
-      trim: true
-    }
-  ],
+  subcategories: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Subcategory'
+  }],
   isActive: {
     type: Boolean,
     default: true

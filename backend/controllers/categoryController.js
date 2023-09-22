@@ -1,4 +1,5 @@
 import Category from '../models/categoryModel.js'
+import SubCategory from '../models/subCategoryModel.js'
 
 export const getCategories = async (req, res) => {
   try {
@@ -80,22 +81,35 @@ export const deleteCategory = async (req, res) => {
 // Add subcategory
 export const addSubcategory = async (req, res) => {
   const categoryId = req.params.id
-  const { subcategory } = req.body
+  const { subcategoryName } = req.body
 
   try {
-    // Find category by ID and add new subcategory to its subcategory array
-    const updatedCategory = await Category.findByIdAndUpdate(
-      categoryId,
-      { $push: { subcategory } },
-      { new: true } // Return the updated category
-    )
+    const category = await Category.findById(categoryId)
 
-    if (!updatedCategory) {
+    if (!category) {
       return res.status(404).json({ message: 'Category not found' })
     }
 
-    res.status(200).json(updatedCategory)
+    // Check if subcategory with the same name already exists
+    let subcategory = await SubCategory.findOne({ name: subcategoryName })
+    if (subcategory) {
+      return res.status(400).json({ message: 'Subcategory already exists' })
+    }
+
+    // Create new subcategory document
+    subcategory = new SubCategory({
+      name: subcategoryName,
+      category: categoryId
+    })
+
+    await subcategory.save()
+
+    // Add the subcategory's ID to the main category's subcategories array
+    category.subcategories.push(subcategory._id)
+    await category.save()
+
+    res.json(category)
   } catch (error) {
-    res.status(500).json({ message: 'Error adding subcategory', error: error.message })
+    res.status(500).json({ message: 'Server Error', error: error.message })
   }
 }

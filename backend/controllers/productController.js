@@ -1,5 +1,6 @@
 import Product from '../models/productModel.js'
 import Category from '../models/categoryModel.js'
+import Subcategory from '../models/subCategoryModel.js'
 // eslint-disable-next-line no-unused-vars
 import Review from '../models/reviewModel.js'
 
@@ -57,7 +58,7 @@ export const createProduct = async (req, res) => {
     price,
     stock,
     categoryId,
-    subcategoryName,
+    subcategoryId,
     imageURL,
     rating,
     reviews
@@ -65,12 +66,13 @@ export const createProduct = async (req, res) => {
 
   try {
     const category = await Category.findById(categoryId)
+    const subcategory = await Subcategory.findById(subcategoryId)
 
     if (!category) {
       return res.status(404).json({ message: 'Category not found' })
     }
 
-    if (!category.subcategory.includes(subcategoryName)) {
+    if (!subcategory || String(subcategory.category) !== String(categoryId)) {
       return res.status(400).json({ message: 'Invalid subcategory for this category' })
     }
 
@@ -80,7 +82,7 @@ export const createProduct = async (req, res) => {
       price,
       stock,
       category: categoryId,
-      subcategory: subcategoryName,
+      subcategory: subcategoryId, // We're saving the subcategory ID here
       imageURL,
       rating,
       reviews

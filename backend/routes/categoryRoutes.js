@@ -16,9 +16,9 @@ router.route('/')
   .post(protect, isAdmin, addCategory)
 
 router.route('/:id')
-  .put(protect, isAdmin, updateCategory)
+  .patch(protect, isAdmin, updateCategory)
   .delete(protect, isAdmin, deleteCategory)
 
-router.route('/:id/subcategory').put(addSubcategory)
+router.route('/:id/subcategories').post(protect, isAdmin, addSubcategory)
 
 export default router
