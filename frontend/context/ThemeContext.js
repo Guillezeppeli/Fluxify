@@ -1,5 +1,5 @@
 import { createContext, useContext, useState } from 'react';
-import { createTheme, ThemeProvider as MUIThemeProvider,  useTheme } from '@mui/material/styles';
+import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 const ThemeContext = createContext({
