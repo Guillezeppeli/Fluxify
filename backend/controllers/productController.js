@@ -28,7 +28,15 @@ export const getProducts = async (req, res) => {
   }
 
   try {
-    const products = await Product.find(query).populate('category').populate('reviews')
+    const products = await Product.find(query)
+      .populate('category')
+      .populate({
+        path: 'subcategory',
+        select: 'name -_id' // Fetch only the name of the subcategory and exclude its _id
+      })
+      .populate('reviews')
+      .exec()
+
     res.json(products)
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message })
