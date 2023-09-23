@@ -1,5 +1,6 @@
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '../context/ThemeContext.js';
+import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   return (

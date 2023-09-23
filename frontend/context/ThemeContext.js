@@ -1,7 +1,12 @@
 import { createContext, useContext, useState } from 'react';
-import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider as MUIThemeProvider,  useTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-const ThemeContext = createContext();
+const ThemeContext = createContext({
+  darkMode: false,
+  setDarkMode: () => {},
+  toggleColorMode: () => {},
+});
 
 export const ThemeProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
@@ -15,13 +20,18 @@ export const ThemeProvider = ({ children }) => {
     },
   });
 
+  const toggleColorMode = () => {
+    setDarkMode((prevMode) => !prevMode);
+  };
+
   return (
-    <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+    <ThemeContext.Provider value={{ darkMode, setDarkMode, toggleColorMode }}>
       <MUIThemeProvider theme={theme}>
+      <CssBaseline />
         {children}
       </MUIThemeProvider>
     </ThemeContext.Provider>
   );
 };
 
-export const useTheme = () => useContext(ThemeContext); // Providing a hook for accessing the theme context
+export const useThemeContext = () => useContext(ThemeContext); // Providing a hook for accessing the theme context
