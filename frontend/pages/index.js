@@ -1,6 +1,6 @@
 import React from 'react';
 import ProductList from '../components/ProductList.js';
-import Header from '../components/header.js';
+import Header from '../components/header.js'
 import { fetchProducts } from '../utils/fetchProducts';
 
 const IndexPage = () => {
