@@ -10,6 +10,24 @@ const Registration = () => {
     password: '',
   });
   const [error, setError] = useState(null);
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
+  const validateFields = () => {
+    const newErrors = {};
+  
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
+    if (!formData.email.trim()) newErrors.email = "Email is required.";
+    if (!formData.password.trim()) newErrors.password = "Password is required.";
+  
+    setErrors(newErrors);
+  
+    // If there are errors, return false. Else, return true.
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,9 +39,19 @@ const Registration = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    if (!validateFields()) return; // Return early if validation fails
+  
     try {
       const response = await registerUser(formData);
       console.log('Registration successful:', response);
+      // Reset errors if any
+      setErrors({
+        name: "",
+        email: "",
+        password: ""
+      });
+      setError(null);
       // Redirect or show success message
     } catch (err) {
       setError(err.message);
@@ -43,6 +71,8 @@ const Registration = () => {
           name="name"
           value={formData.name}
           onChange={handleChange}
+          error={Boolean(errors.name)}
+          helperText={errors.name}
         />
         <TextField
           fullWidth
@@ -50,8 +80,11 @@ const Registration = () => {
           placeholder='JohnDoe@example.com'
           label="Email"
           variant="outlined"
+          name="email"
           value={formData.email}
           onChange={handleChange}
+          error={Boolean(errors.email)}
+          helperText={errors.email}
         />
         <TextField
           fullWidth
@@ -62,6 +95,8 @@ const Registration = () => {
           name="password"
           value={formData.password}
           onChange={handleChange}
+          error={Boolean(errors.password)}
+          helperText={errors.password}
         />
         <div className='pt-3'>
           <CustomButton 
