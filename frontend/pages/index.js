@@ -1,7 +1,7 @@
 import React from 'react';
 import ProductList from '../components/ProductList.js';
-import Header from '../components/header.js'
-import { fetchProducts } from '../utils/fetchProducts';
+import Header from '../components/Header.js'
+import { fetchProducts } from '../utils/productServices.js';
 
 const IndexPage = () => {
   const [products, setProducts] = React.useState([]);

@@ -1,39 +1,51 @@
 import User from '../models/userModel.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import mongoose from 'mongoose'
 
 export const registerUser = async (req, res) => {
   const { name, email, password } = req.body
 
-  const userExists = await User.findOne({ email })
+  try {
+    const userExists = await User.findOne({ email })
 
-  if (userExists) {
-    return res.status(400).json({ message: 'User already exists' })
-  }
-
-  const user = new User({
-    name,
-    email,
-    password
-  })
-
-  await user.save()
-
-  const payload = {
-    user: {
-      id: user.id
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' })
     }
-  }
 
-  jwt.sign(
-    payload,
-    process.env.JWT_SECRET,
-    { expiresIn: '1h' },
-    (err, token) => {
-      if (err) throw err
-      res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
+    const user = new User({
+      name,
+      email,
+      password
+    })
+
+    await user.save()
+
+    const payload = {
+      user: {
+        id: user.id
+      }
     }
-  )
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) {
+          // Handle JWT error
+          return res.status(500).json({ message: 'Error signing token', error: err.message })
+        }
+        res.json({ token, user: { id: user.id, name: user.name, email: user.email } })
+      }
+    )
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return res.status(400).json({ errors: error.errors })
+    // Handle Mongoose or other errors
+    }
+    res.status(500).json({ message: 'Server Error', error: error.message })
+  }
 }
 
 export const loginUser = async (req, res) => {

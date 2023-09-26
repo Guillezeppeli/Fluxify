@@ -28,8 +28,8 @@ function Header() {
 
           <div className="flex">
             <ThemeToggleButton />
-            <Link href="/registration" passHref>
-              <Button color="inherit"  style={{ marginLeft: '15px' }}>Registration</Button>
+            <Link href="/register" passHref>
+              <Button color="inherit"  style={{ marginLeft: '15px' }}>Sign Up</Button>
             </Link>
             <Link href="/login" passHref>
               <Button color="inherit" style={{ marginLeft: '15px' }}>Login</Button>
