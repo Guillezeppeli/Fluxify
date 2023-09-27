@@ -1,34 +1,19 @@
 import React, { useState } from 'react';
-import { registerUser } from '../utils/userServices.js';
+import { useUserContext  } from '../context/UserContext.js';
 import { TextField, Typography } from '@mui/material';
+import { loginUser } from '../utils/userServices.js';
 import { useRouter } from 'next/router';
 import CustomButton from './CustomButton.js';
+import WelcomeModal from './WelcomeModal.js';
 
-const Registration = () => {
+const Login = () => {
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: '',
   });
   const [error, setError] = useState(null);
-  const [errors, setErrors] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
-
-  const validateFields = () => {
-    const newErrors = {};
-  
-    if (!formData.name.trim()) newErrors.name = "Name is required.";
-    if (!formData.email.trim()) newErrors.email = "Email is required.";
-    if (!formData.password.trim()) newErrors.password = "Password is required.";
-  
-    setErrors(newErrors);
-  
-    // If there are errors, return false. Else, return true.
-    return Object.keys(newErrors).length === 0;
-  };
+  const [showModal, setShowModal] = useState(false);
+  const { setUser } = useUserContext();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,26 +23,34 @@ const Registration = () => {
     }));
   };
 
+  const validateFields = () => {
+    if (!formData.email || !formData.password) {
+      setError("All fields are required.");
+      return false;
+    }
+    return true;
+  };
+
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    if (!validateFields()) return; // Return early if validation fails
-  
-    try {
-      const response = await registerUser(formData);
-      console.log('Registration successful:', response);
-      // Reset errors if any
-      setErrors({
-        name: "",
-        email: "",
-        password: ""
-      });
-      setError(null);
 
-      // Redirect to WelcomePage after successful registration
-      router.push('/welcome');
+    if (!validateFields()) return; // Return early if validation fails
+
+    try {
+      const response = await loginUser(formData);
+      console.log('Login successful:', response);
+      setError(null);
+      setUser(response.user);
+
+      if (response.user.isAdmin) {
+        router.push('/admin'); // redirect to admin dashboard
+      } else {
+      //Redirect to homepage
+      setShowModal(true);
+      }    
+
     } catch (err) {
       setError(err.message);
     }
@@ -66,19 +59,8 @@ const Registration = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <form onSubmit={handleSubmit} className="p-6 rounded-lg shadow-md">
-        <Typography variant="h5">Register</Typography>
+        <Typography variant="h5">Login</Typography>
         {error && <Typography color="error">{error}</Typography>}
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Name"
-          variant="outlined"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          error={Boolean(errors.name)}
-          helperText={errors.name}
-        />
         <TextField
           fullWidth
           margin="normal"
@@ -88,8 +70,6 @@ const Registration = () => {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          error={Boolean(errors.email)}
-          helperText={errors.email}
         />
         <TextField
           fullWidth
@@ -100,21 +80,20 @@ const Registration = () => {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          error={Boolean(errors.password)}
-          helperText={errors.password}
         />
         <div className='pt-3'>
           <CustomButton 
             type="submit" 
-            variant="contained"
+            variant="contained" 
             color='primary'
           > 
-            Sign Up
+            Login
           </CustomButton>
         </div>
       </form>
+      { showModal && <WelcomeModal open={true} onClose={() => setShowModal(false)} /> }
     </div>
   );
 };
 
-export default Registration;
+export default Login;

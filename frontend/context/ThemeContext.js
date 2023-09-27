@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { createTheme, ThemeProvider as MUIThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { blue } from '@mui/material/colors';
+import CssBaseline  from '@mui/material/CssBaseline';
+
 
 const ThemeContext = createContext({
   darkMode: false,
@@ -32,7 +32,7 @@ export const ThemeProvider = ({ children }) => {
   return (
     <ThemeContext.Provider value={{ darkMode, setDarkMode, toggleColorMode }}>
       <MUIThemeProvider theme={theme}>
-      <CssBaseline />
+        <CssBaseline /> 
         {children}
       </MUIThemeProvider>
     </ThemeContext.Provider>
