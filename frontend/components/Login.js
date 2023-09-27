@@ -40,7 +40,7 @@ const Login = () => {
 
     try {
       const response = await loginUser(formData);
-      console.log('Login successful:', response);
+      console.log('Received user data:', response);
       setError(null);
       setUser(response.user);
 

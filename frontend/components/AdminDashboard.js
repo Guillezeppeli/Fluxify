@@ -1,6 +1,7 @@
 import { useEffect  } from 'react';
 import { useRouter } from 'next/router';
 import { useUserContext } from '../context/UserContext.js';
+import AdminDashboardLayout from '../pages/admin/AdminDashboardLayout.js';
 
 function AdminDashboard() {
   const router = useRouter();
@@ -13,10 +14,10 @@ function AdminDashboard() {
   }, [user]);
 
   return (
-    <div>
+    <AdminDashboardLayout>
       <h1>Admin Dashboard</h1>
       <p>Welcome to the admin dashboard!</p>
-    </div>
+    </AdminDashboardLayout>
   );
 }
 

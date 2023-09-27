@@ -25,6 +25,8 @@ function Header() {
     router.push('/');
   };
 
+  console.log("User state in Header:", user);
+
   return (
     <Box sx={{ flexGrow: 1 }} className="font-roboto">
       <AppBar position="static">
@@ -42,7 +44,7 @@ function Header() {
           </div>
           { user && user.isAdmin && (
         <>
-          <Link href="/admin">Admin Dashboard</Link>
+          <Link href="/admin/">Admin Dashboard</Link>
         </>
       )}
           <div className="flex">

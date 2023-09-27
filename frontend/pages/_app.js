@@ -12,7 +12,6 @@ function MyApp({ Component, pageProps }) {
       <ThemeProvider>
           <CssBaseline /> {/* Add this line */}
           <Component {...pageProps} />
-          {user && user.isAdmin ? <AdminDashboard /> : <p>You are not authorized to view this section.</p>}
       </ThemeProvider>
     </UserProvider>
   );
