@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
 const UserContext = createContext({
   user: null,
@@ -6,7 +6,15 @@ const UserContext = createContext({
 });
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // null means no user is logged in
+  const [user, setUser] = useState(null); // Set initial state to null
+
+useEffect(() => {
+  // Move the localStorage logic inside a useEffect, which runs on the client side
+  const storedUser = JSON.parse(localStorage.getItem('user'));
+  if (storedUser) {
+    setUser(storedUser);
+  }
+}, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>

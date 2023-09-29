@@ -40,7 +40,7 @@ const Login = () => {
 
     try {
       const response = await loginUser(formData);
-      console.log('Received user data:', response);
+      localStorage.setItem('user', JSON.stringify(response.user));
       setError(null);
       setUser(response.user);
 
@@ -49,8 +49,8 @@ const Login = () => {
       } else {
       //Redirect to homepage
       setShowModal(true);
+      router.push('/'); // redirect to homepage
       }    
-
     } catch (err) {
       setError(err.message);
     }

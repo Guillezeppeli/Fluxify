@@ -1,14 +1,13 @@
-import Header from '../../components/Header.js';
 import AdminDashboardLayout from '../admin/AdminDashboardLayout.js';
-import CreateProduct from '../../components/CreateProduct'; // Assuming you've created this component based on the earlier example
+import CreateProduct from '../../components/CreateProduct.js';
+import Categories from '../../components/Categories.js'; // Assuming you've created this component based on the earlier example
 
 function CreateProductPage() {
   return (
     <>
-      <Header />
       <AdminDashboardLayout>
-        <h1>Create New Product</h1>
         <CreateProduct />
+        <Categories />
       </AdminDashboardLayout>
     </>
   );

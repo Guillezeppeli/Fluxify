@@ -1,11 +1,10 @@
-import Header from "../../components/Header.js";
+import AdminDashboardLayout from "./AdminDashboardLayout.js";
 import AdminDashboard from "../../components/AdminDashboard.js";
-import AdminDashboardLayout from "../admin/AdminDashboardLayout.js"
 
 function AdminPage() {
   return (
     <div>
-      <Header />
+      <AdminDashboardLayout />
       <AdminDashboard />
     </div>
   );

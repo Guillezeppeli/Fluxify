@@ -4,7 +4,10 @@ import {
   getCategories,
   updateCategory,
   deleteCategory,
-  addSubcategory
+  getSubcategories,
+  addSubcategory,
+  updateSubcategory,
+  deleteSubcategory
 } from '../controllers/categoryController.js'
 import isAdmin from '../middleware/adminMiddleware.js'
 import protect from '../middleware/authMiddleware.js'
@@ -19,6 +22,12 @@ router.route('/:id')
   .patch(protect, isAdmin, updateCategory)
   .delete(protect, isAdmin, deleteCategory)
 
-router.route('/:id/subcategories').post(protect, isAdmin, addSubcategory)
+router.route('/:id/subcategories')
+  .get(getSubcategories)
+  .post(protect, isAdmin, addSubcategory)
+
+router.route('/:id/subcategories/:subcategoryId')
+  .patch(protect, isAdmin, updateSubcategory)
+  .delete(protect, isAdmin, deleteSubcategory)
 
 export default router

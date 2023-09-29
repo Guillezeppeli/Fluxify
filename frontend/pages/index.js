@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import ProductList from '../components/ProductList.js';
 import Header from '../components/Header.js'
+import Categories from '../components/Categories.js';
 import { fetchProducts } from '../utils/productServices.js';
 import WelcomeModal from '../components/WelcomeModal.js';
 import { useRouter } from 'next/router.js';
