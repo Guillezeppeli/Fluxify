@@ -1,83 +1,151 @@
-import { useState } from 'react';
-import { TextField, Typography } from '@mui/material';
-import CustomButton from './CustomButton.js'
+import { useState, useEffect } from 'react';
+import { 
+  TextField, 
+  Typography,
+  Select, 
+  MenuItem, 
+  FormControl, 
+  InputLabel 
+} from '@mui/material';
+import CreateButton from './CreateButton.js'
+import { createProduct } from '../utils/productServices.js';
+import { fetchCategories, fetchSubcategories } from '../utils/categoryServices.js';
 
-function CreateProduct() {
-  const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: '',
-    stock: '',
-    imageURL: ''
-});
+const CreateProduct = () => {
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('');
+  const [imageURL, setImageURL] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  }
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Here, make a POST request to your backend with the formData
+  const handleProductSubmit = async () => {
     try {
-        const response = await fetch('http://localhost:5000/api/products', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
+      const productData = {
+        name,
+        description,
+        price: parseFloat(price),
+        stock: parseInt(stock, 10),
+        imageURL
+      };
 
-        if (!response.ok) {
-            throw new Error('Failed to create product');
-        }
-
-        const data = await response.json();
-        console.log(data);
+      const response = await createProduct(productData);
+      console.log('Product created:', response);
     } catch (error) {
-        console.error(error);
+      console.error('Error creating product:', error.message);
     }
-}
+  };
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const fetchedCategories = await fetchCategories();
+        setCategories(fetchedCategories);
+      } catch (error) {
+        console.error('Failed to load categories:', error);
+      }
+    };
+
+    loadCategories();
+  }, []);
+
+  const handleCategoryChange = async (event) => {
+    const selectedCategoryId = event.target.value;
+    setSelectedCategoryId(selectedCategoryId);
+    
+    // Fetch subcategories for the selected category
+    try {
+      const fetchedSubcategories = await fetchSubcategories(selectedCategoryId);
+      setSubcategories(fetchedSubcategories);
+    } catch (error) {
+      console.error("Error fetching subcategories:", error.message);
+    }
+  };
 
   return (
-    <form>
-      <Typography variant="h4">Create new product</Typography>
+    <div>
+      <Typography variant="h4">Create Product</Typography>
+      
       <TextField
-        fullWidth
         label="Name"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-      />
-      <TextField
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         fullWidth
+        margin="normal"
+      />
+
+      <TextField
         label="Description"
-        name="description"
-        value={formData.description}
-        onChange={handleChange}
-      />
-      <TextField
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
         fullWidth
+        margin="normal"
+      />
+
+      <TextField
         label="Price"
-        name="price"
-        value={formData.price}
-        onChange={handleChange}
-      />
-      <TextField
+        value={price}
+        onChange={(e) => setPrice(e.target.value)}
         fullWidth
-        label="Image"
-        name="Image"
-        value={formData.imageURL}
-        onChange={handleChange}
+        margin="normal"
+        type="number"
       />
-      {/* Add other fields as necessary */}
-      <CustomButton variant="contained" color="primary" type="submit">
+
+      <TextField
+        label="Stock"
+        value={stock}
+        onChange={(e) => setStock(e.target.value)}
+        fullWidth
+        margin="normal"
+        type="number"
+      />
+
+      <TextField
+        label="Image URL"
+        value={imageURL}
+        onChange={(e) => setImageURL(e.target.value)}
+        fullWidth
+        margin="normal"
+      />
+
+      <FormControl fullWidth margin="normal">
+        <InputLabel>Category</InputLabel>
+        <Select
+          value={selectedCategoryId}
+          onChange={handleCategoryChange}
+        >
+          {categories.map(category => (
+            <MenuItem key={category._id} value={category._id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <FormControl variant='outlined' fullWidth margin="normal">
+        <InputLabel>Subcategory</InputLabel>
+        <Select
+          value={selectedSubcategoryId || ''}
+          onChange={(e) => setProductData(prevData => ({ ...prevData, subcategoryId: e.target.value }))}
+          label="Subcategory"
+        >
+          {subcategories.map(subcategory => (
+            <MenuItem key={subcategory._id} value={subcategory._id}>
+              {subcategory.name}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <CreateButton variant="contained" color="primary" onClick={handleProductSubmit} style={{ marginTop: '20px' }}>
         Create Product
-      </CustomButton>
-    </form>
+      </CreateButton>
+    </div>
   );
-}
+};
 
 export default CreateProduct;
 

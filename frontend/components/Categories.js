@@ -1,19 +1,17 @@
 import React, { Fragment, useState, useEffect } from 'react';
-import { fetchCategories, fetchSubcategories } from '../utils/categoryServices';
+import { fetchCategories, fetchSubcategories } from '../utils/categoryServices.js';
 import { 
   Drawer,
   List,
   ListItem,
   ListItemText,
 } from '@mui/material';
-import { useUserContext } from '../context/UserContext.js';
 
 
 function Categories({ isOpen, onClose }) {
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [subcategories, setSubcategories] = useState([]);
-  const { user } = useUserContext();  // assuming you've imported this from your user context
 
   useEffect(() => {
     async function loadCategories() {
@@ -46,7 +44,7 @@ function Categories({ isOpen, onClose }) {
 };
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ position: 'absolute', top: 0, left: 0 }}>
   
       {/* Sidebar */}
       <Drawer

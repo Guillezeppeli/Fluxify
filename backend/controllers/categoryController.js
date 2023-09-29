@@ -84,8 +84,10 @@ export const getSubcategories = async (req, res) => {
     const categoryId = req.params.id // Extracting category ID from the route parameter
 
     // Find the category using the provided ID
-    const category = await Category.findById(categoryId).populate('subcategories')
-
+    const category = await Category.findById(categoryId).populate({
+      path: 'subcategories',
+      match: { isActive: true }
+    })
     if (!category) {
       return res.status(404).json({ message: 'Category not found' })
     }

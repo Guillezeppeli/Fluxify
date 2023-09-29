@@ -56,3 +56,42 @@ export const fetchSubcategories = async (categoryId) => {
 		throw new Error(errorMessage);
 	}
 };
+
+export const createSubcategory = async (categoryId, subcategoryData) => {
+  try {
+    const response = await instance.post(`/categories/${categoryId}/subcategories`, subcategoryData);
+    
+    if (response.status !== 200) {
+      throw new Error(response.data.message || 'Failed to create subcategory.');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("API call failed:", error);
+    const errorMessage = error.response?.data?.message || 'Failed to create subcategory.';
+    throw new Error(errorMessage);
+  }
+};
+
+export const updateSubcategory = async (categoryId, subcategoryId, updatedData) => {
+  try {
+    const response = await instance.patch(`/categories/${categoryId}/subcategories/${subcategoryId}`, updatedData);
+    console.log('Updated subcategory response:', response.data);
+    return response.data; // This will contain the updated subcategory data
+  } catch (error) {
+    console.error("API call failed:", error);
+    const errorMessage = error.response?.data?.message || 'Failed to update subcategory.';
+    throw new Error(errorMessage);
+  }
+};
+
+export const deleteSubcategory = async (categoryId, subcategoryId) => {
+  try {
+    const response = await instance.delete(`/categories/${categoryId}/subcategories/${subcategoryId}`);
+    return response.data; // This may contain a confirmation message or data related to the deletion
+  } catch (error) {
+    console.error("API call failed:", error);
+    const errorMessage = error.response?.data?.message || 'Failed to delete subcategory.';
+    throw new Error(errorMessage);
+  }
+};

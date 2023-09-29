@@ -31,10 +31,10 @@ function Header() {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }} className="font-roboto">
+    <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{ display: 'inline-flex', justifyContent: 'start'}}>
+        <Toolbar>
+          <Box display='flex' alignItems="center" flexGrow={1}>
             <Button
               style={{ color: 'white', marginRight: '15px' }}
               onMouseEnter={() => setIsDrawerVisible(true)}
@@ -43,25 +43,25 @@ function Header() {
             </Button>
             <Categories isOpen={isDrawerVisible} onClose={() => setIsDrawerVisible(false)} />
 
-            <div style={{ display: 'flex', justifyContent: 'start' }}>
               <Hidden smDown>
                 <Link href="/">
-                  <Button style={{ color: 'white', marginRight: '15px' }}>Homepage</Button>
+                  <Button style={{ color: 'white'}}>
+                    Homepage
+                  </Button>
                 </Link>
               </Hidden>
-            </div>
-          </div>
+            </Box>
           { user && user.isAdmin && (
-        <>
+        <Box display="flex" alignItems="center" flexGrow={1} justifyContent="start">
           <Link href="/admin/">Admin Dashboard</Link>
-        </>
+        </Box>
       )}
-          <div className="flex">
+          <Box display="flex" alignItems="center">
             <ThemeToggleButton />
 
             { user ? (
               <>
-                <span className="mr-4 text-white">Hello, {user.name}</span>
+                <span style={{ marginRight: '16px', color: 'white' }}>Hello, {user.name}</span>
                 <Button 
                   color="inherit"
                   onClick={handleLogout}>
@@ -82,7 +82,7 @@ function Header() {
             <Hidden mdUp>
               <ToggleHiddenMenu />
             </Hidden>
-          </div>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
