@@ -12,6 +12,17 @@ export async function fetchProducts() {
   }
 }
 
+export async function searchProductsByTerms(searchTerm) {
+  try {
+    const response = await instance.get(`/products?searchTerm=${searchTerm}`);
+    return response.data; 
+  } catch (error) {
+    console.error("API call failed:", error);
+    const errorMessage = error.response?.data?.message || `Failed to search products: ${error.message}`;
+    throw new Error(errorMessage);
+  }
+}
+
 export const createProduct = async (productData) => {
   try {
     const response = await instance.post('/products', productData);

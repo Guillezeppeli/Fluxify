@@ -29,9 +29,13 @@ const CreateProduct = () => {
         description,
         price: parseFloat(price),
         stock: parseInt(stock, 10),
-        imageURL
+        imageURL,
+        categoryId: selectedCategoryId,           // Ensure this is added
+        subcategoryId: selectedSubcategoryId 
       };
 
+      console.log("Sending data:", productData);
+      
       const response = await createProduct(productData);
       console.log('Product created:', response);
     } catch (error) {
@@ -53,17 +57,20 @@ const CreateProduct = () => {
   }, []);
 
   const handleCategoryChange = async (event) => {
-    const selectedCategoryId = event.target.value;
-    setSelectedCategoryId(selectedCategoryId);
+    const categoryId = event.target.value;
+    console.log("Selected category ID:", categoryId);  // Corrected the variable name here
+    setSelectedCategoryId(categoryId);
+    setSelectedSubcategoryId('');
     
     // Fetch subcategories for the selected category
     try {
-      const fetchedSubcategories = await fetchSubcategories(selectedCategoryId);
+      const fetchedSubcategories = await fetchSubcategories(categoryId);  // Use the categoryId from the current selection
       setSubcategories(fetchedSubcategories);
     } catch (error) {
       console.error("Error fetching subcategories:", error.message);
     }
-  };
+};
+
 
   return (
     <div>
@@ -129,7 +136,7 @@ const CreateProduct = () => {
         <InputLabel>Subcategory</InputLabel>
         <Select
           value={selectedSubcategoryId || ''}
-          onChange={(e) => setProductData(prevData => ({ ...prevData, subcategoryId: e.target.value }))}
+          onChange={(e) => setSelectedSubcategoryId(e.target.value)}
           label="Subcategory"
         >
           {subcategories.map(subcategory => (

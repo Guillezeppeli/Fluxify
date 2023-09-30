@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Typography, Box } from '@mui/material';
+import { Card, CardMedia, CardContent, Typography, Box } from '@mui/material';
 
 const ProductList = ({ products }) => {
   return (
@@ -7,6 +7,13 @@ const ProductList = ({ products }) => {
       <Box display="flex" flexWrap="wrap" gap={2}>
         {products.map((product) => (
           <Card key={product.id} className="p-4" style={{ width: '300px', margin: '10px' }}>
+            <CardMedia
+              component="img"
+              alt={product.name}
+              height="140"
+              image={product.imageURL}
+              title={product.name}
+            />
             <CardContent>
               <Typography variant="h5" component="div">
                 {product.name}

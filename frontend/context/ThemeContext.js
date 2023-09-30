@@ -19,7 +19,7 @@ export const ThemeProvider = ({ children }) => {
         main: '#2196f3', // Blue color for button background in both modes', // White text for the button in both modes
       },
       background: {
-        default: darkMode ? '#333' : '#fff',
+        default: darkMode ? '#333333' : '#EEEEEE',
       },
     },
   });

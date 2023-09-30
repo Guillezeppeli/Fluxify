@@ -6,24 +6,19 @@ import Review from '../models/reviewModel.js'
 
 // Fetch All Products and return products based on the query parameters received in the request.
 export const getProducts = async (req, res) => {
-  const { name, category, keyword } = req.query
+  const searchTerm = req.query.searchTerm
 
   const query = {
     isActive: true
   }
 
-  if (name) {
-    query.name = new RegExp(name, 'i')
-  }
+  if (searchTerm) {
+    const category = await Category.findOne({ name: new RegExp(searchTerm, 'i') })
 
-  if (category) {
-    query.category = category
-  }
-
-  if (keyword) {
     query.$or = [
-      { name: new RegExp(keyword, 'i') },
-      { description: new RegExp(keyword, 'i') }
+      { name: new RegExp(searchTerm, 'i') },
+      { description: new RegExp(searchTerm, 'i') },
+      { category: category ? category._id : null }
     ]
   }
 

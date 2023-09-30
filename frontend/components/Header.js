@@ -4,7 +4,7 @@ import {
   Toolbar, 
   Button,
   Hidden,
-  Box 
+  Box,
 } from '@mui/material';
 import { useUserContext } from '../context/UserContext.js'
 import { ThemeToggleButton } from '../components/ThemeToggleButton.js';
@@ -18,7 +18,6 @@ function Header() {
   const { user, setUser } = useUserContext();
   const router = useRouter();
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
-
 
   const handleLogout = () => {
     // Remove the token
@@ -58,7 +57,6 @@ function Header() {
       )}
           <Box display="flex" alignItems="center">
             <ThemeToggleButton />
-
             { user ? (
               <>
                 <span style={{ marginRight: '16px', color: 'white' }}>Hello, {user.name}</span>
@@ -69,6 +67,7 @@ function Header() {
                 </Button>
               </>
             ) : (
+              
               <>
                 <Link href="/register">
                   <Button color="inherit"  style={{ marginLeft: '15px' }}>Sign Up</Button>
