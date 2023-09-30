@@ -1,94 +1,71 @@
 import React, { useState } from 'react';
-import { 
-  TextField, 
-  InputAdornment, 
-  InputBase, 
-  IconButton, 
-  List, 
-  ListItem, 
-  Divider 
-} from '@material-ui/core';
+import { TextField, IconButton } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
-import { useTheme } from '@mui/material/styles';
+import { searchProductsByTerms } from '../utils/productServices.js';
 
-const SearchProducts = ({ onSearch }) => {
-  const theme = useTheme();
+const SearchProducts = () => {
+
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
 
-  const searchStyles = {
-    backgroundColor: theme.palette.background.default,
-    color: theme.palette.text.primary,
-    padding: '5px 10px',
-    borderRadius: theme.shape.borderRadius,
-  }
-
   const handleSearch = async () => {
-    const searchResults = await onSearch(searchTerm);
-    setResults(searchResults);
-  };
+    try {
+      const fetchedResults = await searchProductsByTerms(searchTerm);
+      setResults(fetchedResults);
+  } catch (error) {
+      console.error("Error searching products:", error.message);
+  }
+};
 
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-      <InputBase
-        style={searchStyles}
-        placeholder="Search Products"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            handleSearch();
-          }
-        }}
-        endAdornment={(
-          <InputAdornment position="end">
-            <IconButton onClick={handleSearch}>
-              <SearchIcon color='action' />
-            </IconButton>
-          </InputAdornment>
-        )}
-      />
-      {results && results.length > 0 && (
-        <TextField>
-        {results.map((product, index) => (
-          <React.Fragment key={product._id}>
-            <ListItem 
-              button 
-              onClick={() => {
-                // Handle what happens when a product is clicked
+return (
+  <div className="flex flex-col items-center justify-center ">
+      <div className="flex border rounded-md p-2 w-2/3 md:w-1/2 lg:w-1/3">
+          <Autocomplete
+              freeSolo
+              options={results.map((option) => option.name)}
+              onInputChange={(event, newInputValue) => {
+                  setSearchTerm(newInputValue);
+                  handleSearch();
               }}
-              style={{ 
-                padding: '10px 20px',
-                transition: 'background-color 0.3s',
-                '&:hover': {
-                  backgroundColor: '#f5f5f5',
-                }
-              }}
-            >
+              renderInput={(params) => (
+                  <TextField 
+                      {...params} 
+                      variant="outlined" 
+                      className="flex-grow px-2 py-1 outline-none text-black" 
+                      InputProps={{
+                          ...params.InputProps,
+                          endAdornment: (
+                            <>
+                              {params.InputProps.endAdornment}
+                              <IconButton onClick={handleSearch}>
+                                <SearchIcon className="text-gray-500"/>
+                              </IconButton>
+                            </>
+                          ),
+                      }}
+                  />
+              )}
+          />
+      </div>
+      <div className="mt-4 w-full px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {results && results.length > 0 && results.map((product, index) => (
+            <div key={product._id} className="flex flex-col rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer">
               {product.imageURL && (
-                <img 
-                  src={product.imageURL} 
-                  alt={product.name} 
-                  style={{ 
-                    width: '50px', 
-                    height: '50px', 
-                    borderRadius: '5px', 
-                    marginRight: '15px' 
-                  }} 
+                <img
+                  src={product.imageURL}
+                  alt={product.name}
+                  className="w-24 h-24 object-cover rounded-t-lg mx-auto"
                 />
               )}
-              <div style={{ flexGrow: 1 }}>
-                <Typography variant="h6">{product.name}</Typography>
-                <Typography variant="body2" color="textSecondary">${product.price}</Typography>
+              <div className="p-4">
+                <h6 className="text-lg font-semibold mb-2">{product.name}</h6>
+                <p className="text-gray-500">${product.price}</p>
               </div>
-            </ListItem>
-            {index !== results.length - 1 && <Divider />}
-          </React.Fragment>
-        ))}
-      </TextField>
-      
-      )}
-    </div>
-  )
+            </div>
+          ))}
+      </div>
+  </div>
+);
 }
 export default SearchProducts;

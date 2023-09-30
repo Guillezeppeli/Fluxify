@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AdminDashboardLayout from "./AdminDashboardLayout.js";
 import SearchProducts from "../../components/SearchProducts.js";
-import AdminDashboard from "../../components/AdminDashboard.js";
+import AdminDashboard from "../../components/adminDashboard.js";
 import { searchProductsByTerms } from "../../utils/productServices.js";
 
 const AdminPage = () => {
