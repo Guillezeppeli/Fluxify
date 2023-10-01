@@ -8,7 +8,7 @@ import {
   InputLabel 
 } from '@mui/material';
 import CreateButton from './CreateButton.js'
-import { createProduct } from '../utils/productServices.js';
+import { createProduct, updateProduct } from '../utils/productServices.js';
 import { fetchCategories, fetchSubcategories } from '../utils/categoryServices.js';
 
 const CreateProduct = () => {
@@ -21,6 +21,8 @@ const CreateProduct = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [subcategories, setSubcategories] = useState([]);
   const [selectedSubcategoryId, setSelectedSubcategoryId] = useState('');
+  const [mode, setMode] = useState("create"); // can be "create" or "edit"
+  const [currentProduct, setCurrentProduct] = useState(null);
 
   const handleProductSubmit = async () => {
     try {

@@ -35,3 +35,15 @@ export const createProduct = async (productData) => {
   }
 }
 
+export const updateProduct = async (productId, updatedData) => {
+  try {
+    const response = await instance.patch(`/products/${productId}`, updatedData);
+    
+    return response.data; 
+  } catch (error) {
+    console.error("API call failed:", error);
+    const errorMessage = error.response?.data?.message || `Failed to update product: ${error.message}`;
+    throw new Error(errorMessage);
+  }
+}
+
