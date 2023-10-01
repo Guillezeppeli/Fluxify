@@ -14,11 +14,13 @@ export const getProducts = async (req, res) => {
 
   if (searchTerm) {
     const category = await Category.findOne({ name: new RegExp(searchTerm, 'i') })
+    const subcategory = await Subcategory.findOne({ name: new RegExp(searchTerm, 'i') })
 
     query.$or = [
       { name: new RegExp(searchTerm, 'i') },
       { description: new RegExp(searchTerm, 'i') },
-      { category: category ? category._id : null }
+      { category: category ? category._id : null },
+      { subcategory: subcategory ? subcategory._id : null }
     ]
   }
 
