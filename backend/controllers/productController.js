@@ -41,7 +41,10 @@ export const getProducts = async (req, res) => {
 // Fetch a Single Product by ID:
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate('category').populate('reviews')
+    const product = await Product.findById(req.params.id)
+      .populate('category')
+      .populate('subcategory')
+      .populate('reviews')
 
     if (product) {
       res.json(product)

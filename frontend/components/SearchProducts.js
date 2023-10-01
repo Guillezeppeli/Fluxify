@@ -3,6 +3,7 @@ import { TextField, IconButton } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
 import { searchProductsByTerms } from '../utils/productServices.js';
+import Link from 'next/link';
 
 const SearchProducts = () => {
 
@@ -32,7 +33,8 @@ return (
                   <TextField 
                       {...params} 
                       variant="outlined" 
-                      className="flex-grow px-2 py-1 outline-none text-black" 
+                      className="flex-grow px-2 py-1 outline-none text-black"
+                      fullWidth
                       InputProps={{
                           ...params.InputProps,
                           endAdornment: (
@@ -46,11 +48,13 @@ return (
                       }}
                   />
               )}
+              className='flex-grow'
           />
       </div>
-      <div className="mt-4 w-full px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="mt-4 position-center">
           {results && results.length > 0 && results.map((product, index) => (
             <div key={product._id} className="flex flex-col rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+              <Link href={`/products/${product._id}`} passHref></Link>
               {product.imageURL && (
                 <img
                   src={product.imageURL}
@@ -59,8 +63,8 @@ return (
                 />
               )}
               <div className="p-4">
-                <h6 className="text-lg font-semibold mb-2">{product.name}</h6>
-                <p className="text-gray-500">${product.price}</p>
+                <h6 className="text-lg font-semibold mb-2 text-center">{product.name}</h6>
+                <p className="text-gray-500 text-center">${product.price}</p>
               </div>
             </div>
           ))}

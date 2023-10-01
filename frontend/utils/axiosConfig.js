@@ -12,9 +12,11 @@ const instance = axios.create({
 // Interceptor to attach the token to requests
 instance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+    if (typeof window !== 'undefined') {  // Check if we're in the browser
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -29,9 +31,25 @@ instance.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response && error.response.status === 401) {
       // Handle the error and redirect to login page
-      window.location = '/';
+      if (typeof window !== 'undefined') {
+        window.location = '/';
+      }
+    } else if (error.response) {
+      // Handle errors returned from the server
+      console.error("Server Error:", error.response.data);
+      if (error.response.status === 404) {
+          // Handle not found error
+          console.error("Not Found Error:", error.response.data);
+      }
+      // ... handle other status codes
+    } else if (error.request) {
+      // Handle errors that occurred while sending the request
+      console.error("Request Error:", error.request);
+    } else {
+      // Handle other errors
+      console.error("General Error:", error.message);
     }
     return Promise.reject(error);
   }

@@ -32,9 +32,9 @@ router.route('/:id/reviews').get(getProductReviews)
 router.route('/:id/reviews').post(protect, addReview)
 
 // Update Review
-router.route('/:id/reviews/:reviewId').patch(updateProductReview)
+router.route('/:id/reviews/:reviewId').patch(protect, updateProductReview)
 
 // Delete Review
-router.route('/:id/reviews/:reviewId').delete(softDeleteReview)
+router.route('/:id/reviews/:reviewId').delete(protect, softDeleteReview)
 
 export default router
