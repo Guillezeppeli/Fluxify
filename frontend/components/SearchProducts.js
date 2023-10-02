@@ -14,7 +14,6 @@ const SearchProducts = ({ onProductSelect }) => {
   const handleSearch = async () => {
     try {
       const fetchedResults = await searchProductsByTerms(searchTerm);
-      console.log("Fetched Results:", fetchedResults); 
       setResults(fetchedResults || []);
   } catch (error) {
       console.error("Error searching products:", error.message);

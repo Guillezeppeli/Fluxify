@@ -36,7 +36,7 @@ const CreateProduct = ({ initialProductData }) => {
         price: parseFloat(price),
         stock: parseInt(stock, 10),
         imageURL,
-        categoryId: selectedCategoryId,           // Ensure this is added
+        categoryId: selectedCategoryId,
         subcategoryId: selectedSubcategoryId 
       };
 
@@ -69,13 +69,12 @@ const CreateProduct = ({ initialProductData }) => {
 
   const handleCategoryChange = async (event) => {
     const categoryId = event.target.value;
-    console.log("Selected category ID:", categoryId);  // Corrected the variable name here
     setSelectedCategoryId(categoryId);
     setSelectedSubcategoryId('');
     
     // Fetch subcategories for the selected category
     try {
-      const fetchedSubcategories = await fetchSubcategories(categoryId);  // Use the categoryId from the current selection
+      const fetchedSubcategories = await fetchSubcategories(categoryId);
       setSubcategories(fetchedSubcategories);
     } catch (error) {
       console.error("Error fetching subcategories:", error.message);
@@ -108,7 +107,6 @@ const handleDeleteProduct = async () => {
   try {
     await deleteProduct(currentProduct._id);
     console.log("Product deleted successfully.");
-    // Optionally redirect the user or update the state to remove the deleted product
     setCurrentProduct(null); // Clear the selected product
   } catch (error) {
     console.error("Error deleting product:", error.message);
@@ -177,14 +175,10 @@ const toggleMode = () => {
         <FormControl fullWidth margin="normal">
         {mode === "edit" && currentProduct && (
           <div className="product-details">
-            <h2>{mode === "create" ? "Create New Product" : `Editing: ${currentProduct?.name}`}</h2>
-            <p>{currentProduct.description}</p>
-            {/* Add any other details you think are necessary */}
           </div>
         )}
           <InputLabel>Category</InputLabel>
           <Select
-            value={selectedCategoryId}
             onChange={handleCategoryChange}
           >
             {categories.map(category => (
