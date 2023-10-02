@@ -1,8 +1,13 @@
 import instance from "./axiosConfig.js";
 
-export async function fetchProducts() {
+export async function fetchProducts(page = 1, limit = 4) {
   try {
-    const response = await instance.get('/products');
+    const response = await instance.get('/products', {
+      params: {
+        page: page,
+        limit: limit
+      }
+    });
     
     return response.data; 
   } catch (error) {
@@ -43,6 +48,17 @@ export const updateProduct = async (productId, updatedData) => {
   } catch (error) {
     console.error("API call failed:", error);
     const errorMessage = error.response?.data?.message || `Failed to update product: ${error.message}`;
+    throw new Error(errorMessage);
+  }
+}
+
+export const deleteProduct = async (productId) => {
+  try {
+    const response = await instance.delete(`/products/${productId}`);
+    return response.data;
+  } catch (error) {
+    console.error("API call failed:", error);
+    const errorMessage = error.response?.data?.message || `Failed to delete product: ${error.message}`;
     throw new Error(errorMessage);
   }
 }

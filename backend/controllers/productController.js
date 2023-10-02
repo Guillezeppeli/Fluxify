@@ -7,6 +7,9 @@ import Review from '../models/reviewModel.js'
 // Fetch All Products and return products based on the query parameters received in the request.
 export const getProducts = async (req, res) => {
   const searchTerm = req.query.searchTerm
+  const page = Number(req.query.page) || 1 // Default to page 1 if not provided
+  const limit = Number(req.query.limit) || 10 // Default to 10 items per page if not provided
+  const skip = (page - 1) * limit
 
   const query = {
     isActive: true
@@ -26,6 +29,8 @@ export const getProducts = async (req, res) => {
 
   try {
     const products = await Product.find(query)
+      .skip(skip)
+      .limit(limit)
       .populate('category')
       .populate({
         path: 'subcategory',
@@ -34,7 +39,14 @@ export const getProducts = async (req, res) => {
       .populate('reviews')
       .exec()
 
-    res.json(products)
+    // Get the total count of products for pagination metadata
+    const total = await Product.countDocuments(query)
+
+    res.json({
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      products
+    })
   } catch (error) {
     res.status(500).json({ message: 'Server Error', error: error.message })
   }

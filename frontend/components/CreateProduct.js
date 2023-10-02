@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
-  TextField, 
-  Typography,
+  TextField,
   Select, 
   MenuItem, 
   FormControl, 
@@ -9,9 +8,9 @@ import {
   Button
 } from '@mui/material';
 import SearchProducts from '../components/SearchProducts';
-import CreateButton from './CreateButton.js'
 import CustomButton from './CustomButton.js'
-import { createProduct, updateProduct } from '../utils/productServices.js';
+import DeleteButton from '../components/DeleteButton'
+import { createProduct, updateProduct, deleteProduct } from '../utils/productServices.js';
 import { fetchCategories, fetchSubcategories } from '../utils/categoryServices.js';
 
 const CreateProduct = ({ initialProductData }) => {
@@ -94,7 +93,27 @@ const handleProductSelection = (selectedProduct) => {
   setSelectedSubcategoryId(selectedProduct.subcategory?._id);
 
   setShowSearch(false); // Hide the search after selection
-}
+};
+
+const handleDeleteProduct = async () => {
+  if (!currentProduct) {
+    console.error("No product selected for deletion.");
+    return;
+  }
+
+  const confirmation = window.confirm(`Are you sure you want to delete ${currentProduct.name}?`);
+
+  if (!confirmation) return;
+
+  try {
+    await deleteProduct(currentProduct._id);
+    console.log("Product deleted successfully.");
+    // Optionally redirect the user or update the state to remove the deleted product
+    setCurrentProduct(null); // Clear the selected product
+  } catch (error) {
+    console.error("Error deleting product:", error.message);
+  }
+};
 
 const toggleMode = () => {
   setMode(prevMode => prevMode === "create" ? "edit" : "create");
@@ -193,7 +212,17 @@ const toggleMode = () => {
           <CustomButton onClick={handleProductSubmit}>
           {mode === "create" ? "Create" : "Update"}
         </CustomButton>
-        <Button onClick={toggleMode}>
+        {mode === "edit" && currentProduct && (
+        <DeleteButton 
+          variant="contained" 
+          color="secondary" 
+          onClick={handleDeleteProduct}
+          style={{ marginLeft: '10px' }}
+        >
+          Delete Product
+        </DeleteButton>
+      )}
+        <Button onClick={toggleMode} style={{ marginTop: '10px' }}>
           Toggle Mode (Current: {mode})
         </Button>
     </div>
