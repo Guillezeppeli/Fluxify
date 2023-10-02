@@ -30,11 +30,13 @@ const ProductList = () => {
   }, [currentPage]);
 
   return (
-    <div className="flex flex-col h-screen justify-between">
-      <div className="grid grid-cols-2 gap-4 justify-end">
+    <div className="flex flex-col min-h-screen">
+      
+      {/* Products Grid */}
+      <div className="flex flex-wrap justify-center mt-4">
         {products.map((product) => (
           <Link href={`/products/${product._id}`} key={product._id}>
-            <Card className="p-4" style={{ width: '300px', margin: '10px' }}>
+            <Card className="m-4" style={{ width: '300px' }}>
               <CardMedia
                 component="img"
                 alt={product.name}
@@ -60,9 +62,9 @@ const ProductList = () => {
           </Link>
         ))}
       </div>
-  
-      {/* Pagination Controls with Material-UI */}
-      <div className="mt-auto mb-4">
+      
+      {/* Pagination Controls */}
+      <div className="mt-auto mb-8 w-full flex justify-center">
         <Stack spacing={2} justifyContent="center">
           <Pagination
             count={totalPages}
