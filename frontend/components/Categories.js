@@ -27,7 +27,6 @@ function Categories({ isOpen, onClose }) {
   }, []);
 
   useEffect(() => {
-    console.log("Selected Category ID:", selectedCategoryId);
   }, [selectedCategoryId]);
 
 

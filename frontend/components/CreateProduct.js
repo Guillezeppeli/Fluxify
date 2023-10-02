@@ -5,24 +5,29 @@ import {
   Select, 
   MenuItem, 
   FormControl, 
-  InputLabel 
+  InputLabel,
+  Button
 } from '@mui/material';
+import SearchProducts from '../components/SearchProducts';
 import CreateButton from './CreateButton.js'
+import CustomButton from './CustomButton.js'
 import { createProduct, updateProduct } from '../utils/productServices.js';
 import { fetchCategories, fetchSubcategories } from '../utils/categoryServices.js';
 
-const CreateProduct = () => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [stock, setStock] = useState('');
-  const [imageURL, setImageURL] = useState('');
+const CreateProduct = ({ initialProductData }) => {
+  const [currentProduct, setCurrentProduct] = useState(initialProductData);
+  const [name, setName] = useState(currentProduct?.name || '');
+  const [description, setDescription] = useState(currentProduct?.description || '');
+  const [price, setPrice] = useState(currentProduct?.price || '');
+  const [stock, setStock] = useState(currentProduct?.stock || '');
+  const [imageURL, setImageURL] = useState(currentProduct?.imageURL || '');
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState(currentProduct?.categoryId || '');
   const [subcategories, setSubcategories] = useState([]);
-  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState('');
-  const [mode, setMode] = useState("create"); // can be "create" or "edit"
-  const [currentProduct, setCurrentProduct] = useState(null);
+  const [selectedSubcategoryId, setSelectedSubcategoryId] = useState(currentProduct?.subcategoryId || '');
+  const [mode, setMode] = useState(initialProductData ? "edit" : "create");
+  const [showSearch, setShowSearch] = useState(false);
+  
 
   const handleProductSubmit = async () => {
     try {
@@ -38,10 +43,15 @@ const CreateProduct = () => {
 
       console.log("Sending data:", productData);
       
-      const response = await createProduct(productData);
-      console.log('Product created:', response);
+      if (mode === "create") {
+        const response = await createProduct(productData);
+        console.log('Product created:', response);
+      } else if (mode === "edit" && currentProduct) {
+        const response = await updateProduct(currentProduct._id, productData);
+        console.log('Product updated:', response);
+      }
     } catch (error) {
-      console.error('Error creating product:', error.message);
+      console.error('Error handling product:', error.message);
     }
   };
 
@@ -73,85 +83,119 @@ const CreateProduct = () => {
     }
 };
 
+const handleProductSelection = (selectedProduct) => {
+  setCurrentProduct(selectedProduct);
+  setName(selectedProduct.name);
+  setDescription(selectedProduct.description);
+  setPrice(selectedProduct.price);
+  setStock(selectedProduct.stock);
+  setImageURL(selectedProduct.imageURL);
+  setSelectedCategoryId(selectedProduct.category?._id);
+  setSelectedSubcategoryId(selectedProduct.subcategory?._id);
+
+  setShowSearch(false); // Hide the search after selection
+}
+
+const toggleMode = () => {
+  setMode(prevMode => prevMode === "create" ? "edit" : "create");
+  setCurrentProduct(null);  // Clear the current product when switching to create mode
+};
 
   return (
     <div>
-      <Typography variant="h4">Create Product</Typography>
-      
-      <TextField
-        label="Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
+      <h2>
+        {mode === "create" 
+          ? "Create New Product" 
+          : currentProduct 
+            ? `Editing: ${currentProduct.name}` 
+            : 'Select a product to edit'}
+      </h2>
 
-      <TextField
-        label="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
+      {mode === "edit" && <SearchProducts onProductSelect={handleProductSelection} />}
 
-      <TextField
-        label="Price"
-        value={price}
-        onChange={(e) => setPrice(e.target.value)}
-        fullWidth
-        margin="normal"
-        type="number"
-      />
+        <TextField
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-      <TextField
-        label="Stock"
-        value={stock}
-        onChange={(e) => setStock(e.target.value)}
-        fullWidth
-        margin="normal"
-        type="number"
-      />
+        <TextField
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-      <TextField
-        label="Image URL"
-        value={imageURL}
-        onChange={(e) => setImageURL(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
+        <TextField
+          label="Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+          fullWidth
+          margin="normal"
+          type="number"
+        />
 
-      <FormControl fullWidth margin="normal">
-        <InputLabel>Category</InputLabel>
-        <Select
-          value={selectedCategoryId}
-          onChange={handleCategoryChange}
-        >
-          {categories.map(category => (
-            <MenuItem key={category._id} value={category._id}>
-              {category.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        <TextField
+          label="Stock"
+          value={stock}
+          onChange={(e) => setStock(e.target.value)}
+          fullWidth
+          margin="normal"
+          type="number"
+        />
 
-      <FormControl variant='outlined' fullWidth margin="normal">
-        <InputLabel>Subcategory</InputLabel>
-        <Select
-          value={selectedSubcategoryId || ''}
-          onChange={(e) => setSelectedSubcategoryId(e.target.value)}
-          label="Subcategory"
-        >
-          {subcategories.map(subcategory => (
-            <MenuItem key={subcategory._id} value={subcategory._id}>
-              {subcategory.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+        <TextField
+          label="Image URL"
+          value={imageURL}
+          onChange={(e) => setImageURL(e.target.value)}
+          fullWidth
+          margin="normal"
+        />
 
-      <CreateButton variant="contained" color="primary" onClick={handleProductSubmit} style={{ marginTop: '20px' }}>
-        Create Product
-      </CreateButton>
+        <FormControl fullWidth margin="normal">
+        {mode === "edit" && currentProduct && (
+          <div className="product-details">
+            <h2>{mode === "create" ? "Create New Product" : `Editing: ${currentProduct?.name}`}</h2>
+            <p>{currentProduct.description}</p>
+            {/* Add any other details you think are necessary */}
+          </div>
+        )}
+          <InputLabel>Category</InputLabel>
+          <Select
+            value={selectedCategoryId}
+            onChange={handleCategoryChange}
+          >
+            {categories.map(category => (
+              <MenuItem key={category._id} value={category._id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <FormControl variant='outlined' fullWidth margin="normal">
+          <InputLabel>Subcategory</InputLabel>
+          <Select
+            value={selectedSubcategoryId || ''}
+            onChange={(e) => setSelectedSubcategoryId(e.target.value)}
+            label="Subcategory"
+          >
+            {subcategories.map(subcategory => (
+              <MenuItem key={subcategory._id} value={subcategory._id}>
+                {subcategory.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+          <CustomButton onClick={handleProductSubmit}>
+          {mode === "create" ? "Create" : "Update"}
+        </CustomButton>
+        <Button onClick={toggleMode}>
+          Toggle Mode (Current: {mode})
+        </Button>
     </div>
   );
 };

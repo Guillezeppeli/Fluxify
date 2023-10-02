@@ -5,7 +5,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { searchProductsByTerms } from '../utils/productServices.js';
 import { useRouter } from 'next/router';
 
-const SearchProducts = () => {
+const SearchProducts = ({ onProductSelect }) => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [results, setResults] = useState([]);
@@ -14,7 +14,6 @@ const SearchProducts = () => {
   const handleSearch = async () => {
     try {
       const fetchedResults = await searchProductsByTerms(searchTerm);
-      console.log("Fetched Results:", results);
       setResults(fetchedResults);
   } catch (error) {
       console.error("Error searching products:", error.message);
@@ -38,9 +37,13 @@ return (
     }}
     onChange={(event, value) => {
       if (value && value._id) {
-          router.push(`/products/${value._id}`);
+          if (onProductSelect) {
+              onProductSelect(value);
+          } else {
+              router.push(`/products/${value._id}`);
+          }
       }
-    }}
+  }}
       renderInput={(params) => (
           <TextField 
               {...params} 

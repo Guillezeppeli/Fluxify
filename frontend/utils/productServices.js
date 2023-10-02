@@ -46,4 +46,3 @@ export const updateProduct = async (productId, updatedData) => {
     throw new Error(errorMessage);
   }
 }
-
