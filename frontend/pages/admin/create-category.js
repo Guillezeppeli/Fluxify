@@ -115,7 +115,6 @@ const CreateCategoryPage = () => {
   };
 
   useEffect(() => {
-    console.log("Current selectedCategoryId:", selectedCategoryId);
   }, [selectedCategoryId]);
 
   const handleClose = () => {

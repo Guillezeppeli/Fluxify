@@ -5,7 +5,9 @@ import {
   Button,
   Hidden,
   Box,
+  IconButton
 } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useUserContext } from '../context/UserContext.js'
 import { ThemeToggleButton } from '../components/ThemeToggleButton.js';
 import { useRouter } from 'next/router';
@@ -13,8 +15,7 @@ import ToggleHiddenMenu from './ToggleHiddenMenu.js';
 import Link from 'next/link';
 import Categories from '../components/Categories.js';
 
-
-function Header() {
+const Header = () => {
   const { user, setUser } = useUserContext();
   const router = useRouter();
   const [isDrawerVisible, setIsDrawerVisible] = useState(false);
@@ -36,7 +37,7 @@ function Header() {
           <Box display='flex' alignItems="center" flexGrow={1}>
             <Button
               style={{ color: 'white', marginRight: '15px' }}
-              onMouseEnter={() => setIsDrawerVisible(true)}
+              onClick={() => setIsDrawerVisible(true)}
               >
               Categories
             </Button>
@@ -74,6 +75,11 @@ function Header() {
                 </Link>
                 <Link href="/login">
                   <Button color="inherit" style={{ marginLeft: '15px' }}>Login</Button>
+                </Link>
+                <Link href="/cart">
+                  <IconButton color="inherit" edge="end">
+                    <ShoppingCartIcon />
+                  </IconButton>
                 </Link>
               </>
             )}

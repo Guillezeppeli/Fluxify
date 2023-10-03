@@ -1,17 +1,18 @@
 import { ThemeProvider } from '../context/ThemeContext.js';
 import { UserProvider } from '../context/UserContext.js';
-import { useUserContext } from '../context/UserContext.js';
 import '../styles/globals.css'
 import { CssBaseline } from '@mui/material';
-import { AdminDashboard } from '../components/AdminDashboard.js';
+import { CartProvider } from '../context/CartContext.js';
+
 
 function MyApp({ Component, pageProps }) {
-  const { user } = useUserContext();
   return (
     <UserProvider>
       <ThemeProvider>
-          <CssBaseline /> {/* Add this line */}
+        <CartProvider value={{ cart: [], setCart: () => {} }}>
+          <CssBaseline />
           <Component {...pageProps} />
+          </CartProvider>
       </ThemeProvider>
     </UserProvider>
   );
