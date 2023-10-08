@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import ProductList from '../components/ProductList.js';
-import Header from '../components/Header.js'
+import Header from '../components/Header.js';
 import SearchProducts from '../components/SearchProducts.js';
 import { searchProductsByTerms } from '../utils/productServices.js';
 import { fetchProducts } from '../utils/productServices.js';
