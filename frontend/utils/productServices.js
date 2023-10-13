@@ -1,6 +1,6 @@
 import instance from "./axiosConfig.js";
 
-export async function fetchProducts(page = 1, limit = 4) {
+export async function fetchProducts(page = 1, limit = 8) {
   try {
     const response = await instance.get('/products', {
       params: {
